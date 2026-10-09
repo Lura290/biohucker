@@ -32,7 +32,7 @@ pytest с маркером `eval` и `addopts = -m "not eval"`), `.gitignore` (`
 
 **Scope:** M (много мелких конфигов)
 
-### - [ ] T2: LLM-ядро — цикл tool use + FakeLLM
+### - [x] T2: LLM-ядро — цикл tool use + FakeLLM
 
 **Description:** Типы `Tool`, `Message`, `RunResult`, протокол `LLMClient`, общий цикл tool
 use (валидация аргументов pydantic, ошибка валидации возвращается модели, лимит 4 запроса)

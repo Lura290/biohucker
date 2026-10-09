@@ -11,25 +11,26 @@ OpenRouter. Плюс `FakeLLM`, чтобы тесты работали без с
 ## Интерфейс
 
 ```python
-class Tool(BaseModel):
-    name: str
-    description: str
-    args_model: type[BaseModel]                # JSON Schema для API берётся из pydantic
-    handler: Callable[[BaseModel], dict]       # получает уже провалидированные аргументы
+class Tool:                                   # name, description, args_model (pydantic), handler(args) -> dict
+class ChatModel(Protocol):                    # ОДИН запрос к модели; бросает LLMUnavailable
+    def complete(self, messages: list[Message], tools: list[dict]) -> ModelResponse: ...
 
-class LLMClient(Protocol):
-    def run(self, system: str, messages: list[Message], tools: list[Tool]) -> RunResult: ...
+def run_tool_loop(model: ChatModel, system: str, messages: list[Message],
+                  tools: list[Tool], max_requests: int = 4) -> RunResult: ...
 
 @dataclass
 class RunResult:
     reply: str                       # итоговый текст ассистента пользователю
     messages: list[Message]          # история с tool calls — для продолжения диалога
-    tool_calls_made: list[str]       # имена вызванных инструментов
+    tool_calls_made: list[str]       # имена успешно выполненных инструментов
     degraded: bool                   # True → модель недоступна/сломалась, UI показывает форму
 ```
 
-Реализации: `OpenRouterClient` (пакет `openai`, `base_url=https://openrouter.ai/api/v1`) и
-`FakeLLM` (сценарий: список заранее заданных ответов и tool calls).
+Цикл tool use один и общий (`run_tool_loop`), а реализации `ChatModel` отвечают
+только за один запрос. Поэтому тестовая и настоящая модель ведут себя в цикле одинаково.
+
+Реализации `ChatModel`: `OpenRouterModel` (пакет `openai`, `base_url=https://openrouter.ai/api/v1`) и
+`FakeLLM` (сценарий: список заранее заданных ответов, tool calls или `LLMUnavailable`).
 
 ## Поведение
 
