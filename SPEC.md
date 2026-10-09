@@ -105,7 +105,7 @@
 
 ```bash
 uv sync                                   # установить зависимости
-uv run uvicorn biohucker.web.app:app --reload   # dev-сервер на http://127.0.0.1:8000
+uv run uvicorn biohucker.web.app:create_app --factory --reload   # dev-сервер на http://127.0.0.1:8000
 uv run pytest                             # unit + интеграционные тесты (без сети, LLM подменён)
 uv run pytest -m eval                     # LLM-эвалы на реальной модели (ручной запуск, тратит токены)
 uv run ruff check . && uv run ruff format --check .   # линт и формат

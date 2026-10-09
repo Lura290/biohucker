@@ -19,7 +19,7 @@ pytest с маркером `eval` и `addopts = -m "not eval"`), `.gitignore` (`
 шаблоном и главной страницей-заглушкой.
 
 **Acceptance criteria:**
-- [ ] `uv sync` ставит зависимости; `uv run uvicorn biohucker.web.app:app` отдаёт `/` с кодом 200
+- [ ] `uv sync` ставит зависимости; `uv run uvicorn biohucker.web.app:create_app --factory` отдаёт `/` с кодом 200
 - [ ] `uv run pytest` зелёный (1 тест на `/`), `pytest -m eval` по умолчанию не собирается
 - [ ] Конфиг (`biohucker/config.py`) читает `OPENROUTER_API_KEY`, `OPENROUTER_MODEL`, `DATABASE_URL` с дефолтами из SPEC
 
@@ -72,8 +72,8 @@ T2: таймаут 20 с, один повтор на 429/5xx/таймаут, б�
 **Scope:** S
 
 ### Checkpoint 0
-- [ ] `uv run pytest` и ruff зелёные
-- [ ] Приложение стартует на пустом окружении без ключа
+- [x] `uv run pytest` и ruff зелёные
+- [x] Приложение стартует на пустом окружении без ключа
 
 ---
 
@@ -98,7 +98,7 @@ T2: таймаут 20 с, один повтор на 429/5xx/таймаут, б�
 
 **Scope:** S
 
-### - [ ] T5: Репозиторий SQLite + форма чек-ина
+### - [x] T5: Репозиторий SQLite + форма чек-ина
 
 **Description:** `JournalRepo` (`upsert` с частичным слиянием, `get`, `delete`, `range`,
 `missing_fields`) на SQLModel, создание схемы при старте. Страница `/checkin/form`: форма
@@ -119,8 +119,8 @@ T2: таймаут 20 с, один повтор на 429/5xx/таймаут, б�
 **Scope:** M
 
 ### Checkpoint 1 — первая польза
-- [ ] Тесты и ruff зелёные
-- [ ] Дневник можно вести формой; данные переживают перезапуск
+- [x] Тесты и ruff зелёные (61 тест)
+- [x] Дневник можно вести формой; данные переживают перезапуск (проверено вручную)
 - [ ] **Пользователь:** `cp .env.example .env`, вписать ключ, `uv run python scripts/smoke_llm.py`
       → результат определяет стратегию T6 (tool use или JSON-в-тексте)
 

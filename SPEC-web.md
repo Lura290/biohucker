@@ -36,6 +36,6 @@
 
 ## Acceptance Criteria
 
-1. `uv run uvicorn biohucker.web.app:app` поднимает приложение на пустой БД без ошибок.
+1. `uv run uvicorn biohucker.web.app:create_app --factory` поднимает приложение на пустой БД без ошибок.
 2. Каждый срез проверен через `TestClient`: страница отдаёт 200, основной сценарий проходит на `FakeLLM`.
 3. При `degraded` на `/` есть заметная ссылка на форму.
