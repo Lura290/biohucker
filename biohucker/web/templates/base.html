@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}biohucker{% endblock %}</title>
+  <style>
+    body { font-family: system-ui, sans-serif; max-width: 720px; margin: 0 auto; padding: 16px; line-height: 1.5; }
+    nav a { margin-right: 12px; }
+    .error { color: #b00020; font-size: 0.9em; }
+    .ok { color: #1b5e20; }
+    label { display: block; margin-top: 12px; }
+    input { padding: 4px; }
+  </style>
+</head>
+<body>
+  <nav><strong>biohucker</strong> · <a href="/">Чек-ин</a><a href="/checkin/form">Форма</a></nav>
+  <main>{% block content %}{% endblock %}</main>
+</body>
+</html>

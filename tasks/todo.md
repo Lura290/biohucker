@@ -11,7 +11,7 @@
 
 ## Фаза 0: Каркас и LLM-ядро
 
-### - [ ] T1: Каркас проекта — приложение стартует
+### - [x] T1: Каркас проекта — приложение стартует
 
 **Description:** `pyproject.toml` (uv, Python 3.12, зависимости из plan.md, ruff line-length 100,
 pytest с маркером `eval` и `addopts = -m "not eval"`), `.gitignore` (`.env`, `data/`, `.venv/`),
