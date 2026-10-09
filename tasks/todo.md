@@ -51,7 +51,7 @@ use (валидация аргументов pydantic, ошибка валида
 
 **Scope:** M
 
-### - [ ] T3: OpenRouter-клиент + smoke-скрипт
+### - [x] T3: OpenRouter-клиент + smoke-скрипт
 
 **Description:** `OpenRouterClient` на пакете `openai` (`base_url` OpenRouter) поверх цикла из
 T2: таймаут 20 с, один повтор на 429/5xx/таймаут, без ключа сразу `degraded`. Логи без

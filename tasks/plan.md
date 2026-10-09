@@ -65,7 +65,7 @@ T1 каркас ─┬─ T2 llm-ядро ── T3 OpenRouter-клиент ─�
 ### Фаза 0: Каркас и LLM-ядро
 - [x] T1 Каркас проекта: приложение стартует
 - [x] T2 LLM-ядро: цикл tool use + FakeLLM
-- [ ] T3 OpenRouter-клиент + smoke-скрипт
+- [x] T3 OpenRouter-клиент + smoke-скрипт
 ### Checkpoint 0
 
 ### Фаза 1: Дневник через форму
