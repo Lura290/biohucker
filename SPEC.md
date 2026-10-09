@@ -145,7 +145,8 @@ class CheckinEntry(BaseModel):
     mood: int | None = Field(default=None, ge=1, le=10)
     morning_walk_min: int | None = Field(default=None, ge=0, le=300)
     steps: int | None = Field(default=None, ge=0, le=100_000)
-    workout: str | None = None  # "сила 45 мин"; None — тренировки не было
+    workout_min: int | None = Field(default=None, ge=0, le=300)  # 0 — не было, None — не ответил
+    workout_type: str | None = Field(default=None, max_length=100)
 ```
 
 - Типы на всех публичных функциях; pydantic-модели на границах модулей (в том числе

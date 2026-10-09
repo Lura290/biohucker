@@ -13,7 +13,7 @@
 
 | X | Y |
 |---|---|
-| `sleep_hours`, время отбоя (минуты от 18:00), `morning_walk_min`, `steps`, тренировка (0/1) | `energy`, `mood` |
+| `sleep_hours`, время отбоя (минуты от 18:00), `morning_walk_min`, `steps`, тренировка (`workout_min > 0`) | `energy`, `mood` |
 
 Плюс `sleep_hours` и тренировка вчера → `energy` сегодня (лаг 1 день).
 
