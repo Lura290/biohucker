@@ -41,6 +41,9 @@ def main() -> int:
         response = model.complete(messages, [TOOL.schema()])
     except LLMUnavailable as error:
         print(f"❌ Модель недоступна: {error}")
+        if "429" in str(error):
+            print("   Лимит запросов. Подожди пару минут или попробуй другую бесплатную модель:")
+            print("   OPENROUTER_MODEL=<id модели> uv run python scripts/smoke_llm.py")
         return 2
 
     if not response.tool_calls:

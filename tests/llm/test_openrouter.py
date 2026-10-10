@@ -144,3 +144,13 @@ def test_empty_choices_raise_unavailable() -> None:
 
     with pytest.raises(LLMUnavailable):
         make_model(handler).complete([], [])
+
+
+def test_unavailable_error_carries_provider_reason() -> None:
+    def handler(request: httpx.Request) -> httpx.Response:
+        return httpx.Response(
+            429, json={"error": {"message": "google/gemma is temporarily rate-limited upstream"}}
+        )
+
+    with pytest.raises(LLMUnavailable, match="rate-limited upstream"):
+        make_model(handler).complete([], [])

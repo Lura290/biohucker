@@ -82,5 +82,16 @@ class OpenRouterModel:
 
 def _unavailable(error: openai.OpenAIError) -> LLMUnavailable:
     status = getattr(error, "status_code", None)
-    log.warning("openrouter: недоступен (%s, status=%s)", type(error).__name__, status)
-    return LLMUnavailable(f"{type(error).__name__} (status={status})")
+    reason = _provider_reason(error)
+    log.warning("openrouter: недоступен (%s, status=%s): %s", type(error).__name__, status, reason)
+    return LLMUnavailable(f"{type(error).__name__} (status={status}): {reason}")
+
+
+def _provider_reason(error: openai.OpenAIError) -> str:
+    """Текст причины от OpenRouter: какой лимит сработал, у кого и до какого времени."""
+    body = getattr(error, "body", None)
+    if isinstance(body, dict):
+        details = body.get("error", body)
+        if isinstance(details, dict) and details.get("message"):
+            return str(details["message"])
+    return str(error)
