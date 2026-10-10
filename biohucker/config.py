@@ -3,7 +3,7 @@ from dataclasses import dataclass
 
 from dotenv import load_dotenv
 
-DEFAULT_MODEL = "google/gemma-4-31b-it:free"
+DEFAULT_MODEL = "google/gemma-4-26b-a4b-it:free"
 DEFAULT_DATABASE_URL = "sqlite:///data/biohucker.db"
 
 
