@@ -8,6 +8,7 @@ from biohucker.llm.types import (
     RunResult,
     Tool,
     ToolCall,
+    ToolError,
 )
 
 __all__ = [
@@ -20,5 +21,6 @@ __all__ = [
     "RunResult",
     "Tool",
     "ToolCall",
+    "ToolError",
     "run_tool_loop",
 ]

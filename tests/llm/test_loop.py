@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field
 
-from biohucker.llm import FakeLLM, LLMUnavailable, Tool, run_tool_loop
+from biohucker.llm import FakeLLM, LLMUnavailable, Tool, ToolError, run_tool_loop
 
 
 class EnergyArgs(BaseModel):
@@ -97,3 +97,34 @@ def test_input_messages_are_not_mutated() -> None:
     run_tool_loop(FakeLLM([FakeLLM.text("Привет!")]), "system", history, tools=[])
 
     assert history == [{"role": "user", "content": "привет"}]
+
+
+def test_stop_on_returns_right_after_that_tool_succeeds() -> None:
+    calls: list[EnergyArgs] = []
+    llm = FakeLLM([FakeLLM.tool_call("save_energy", energy=7)])
+
+    result = run_tool_loop(llm, "system", [], [make_tool(calls)], stop_on={"save_energy"})
+
+    assert llm.requests == 1
+    assert result.tool_calls_made == ["save_energy"]
+    assert result.reply == ""
+    assert result.degraded is False
+
+
+def test_tool_error_goes_back_to_model_and_does_not_count_as_success() -> None:
+    def handler(args: EnergyArgs) -> dict:
+        if args.energy == 1:
+            raise ToolError("подозрительно низко, уточни")
+        return {"saved": True}
+
+    tool = Tool(name="save_energy", description="", args_model=EnergyArgs, handler=handler)
+    llm = FakeLLM(
+        [FakeLLM.tool_call("save_energy", energy=1), FakeLLM.tool_call("save_energy", energy=5)]
+    )
+
+    result = run_tool_loop(llm, "system", [], [tool], stop_on={"save_energy"})
+
+    first_tool_reply = next(m for m in result.messages if m["role"] == "tool")
+    assert "уточни" in first_tool_reply["content"]
+    assert result.tool_calls_made == ["save_energy"]
+    assert llm.requests == 2

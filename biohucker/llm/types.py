@@ -12,6 +12,10 @@ class LLMUnavailable(Exception):
     """Модель недоступна: нет ключа, лимит (429), ошибка сервера или таймаут."""
 
 
+class ToolError(Exception):
+    """Инструмент отклонил аргументы; текст уходит модели, чтобы она исправилась."""
+
+
 @dataclass(frozen=True)
 class Tool:
     name: str

@@ -2,7 +2,15 @@ import json
 
 from pydantic import ValidationError
 
-from biohucker.llm.types import ChatModel, LLMUnavailable, Message, RunResult, Tool, ToolCall
+from biohucker.llm.types import (
+    ChatModel,
+    LLMUnavailable,
+    Message,
+    RunResult,
+    Tool,
+    ToolCall,
+    ToolError,
+)
 
 MAX_REQUESTS = 4
 
@@ -13,8 +21,13 @@ def run_tool_loop(
     messages: list[Message],
     tools: list[Tool],
     max_requests: int = MAX_REQUESTS,
+    stop_on: frozenset[str] | set[str] = frozenset(),
 ) -> RunResult:
-    """Гоняет модель, пока она вызывает инструменты, но не больше max_requests запросов."""
+    """Гоняет модель, пока она вызывает инструменты, но не больше max_requests запросов.
+
+    Успешный вызов инструмента из stop_on завершает цикл сразу, без ещё одного запроса
+    за текстом ответа: дальше решает вызывающий код.
+    """
     history = [*messages]
     by_name = {tool.name: tool for tool in tools}
     schemas = [tool.schema() for tool in tools]
@@ -40,6 +53,8 @@ def run_tool_loop(
             if ok:
                 called.append(call.name)
             history.append({"role": "tool", "tool_call_id": call.id, "content": content})
+        if stop_on.intersection(called):
+            return RunResult(reply="", messages=history, tool_calls_made=called, degraded=False)
 
     return RunResult(reply="", messages=history, tool_calls_made=called, degraded=True)
 
@@ -56,7 +71,11 @@ def _execute(call: ToolCall, tools: dict[str, Tool]) -> tuple[str, bool]:
             for e in error.errors()
         )
         return f"Ошибка валидации аргументов: {problems}. Исправь и вызови снова.", False
-    return json.dumps(tool.handler(args), ensure_ascii=False, default=str), True
+    try:
+        result = tool.handler(args)
+    except ToolError as error:
+        return f"Ошибка: {error}", False
+    return json.dumps(result, ensure_ascii=False, default=str), True
 
 
 def _assistant_message(content: str | None, tool_calls: list[ToolCall]) -> Message:
