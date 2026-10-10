@@ -4,6 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}biohucker{% endblock %}</title>
+  <link rel="icon" href="data:,">
   <style>
     body { font-family: system-ui, sans-serif; max-width: 720px; margin: 0 auto; padding: 16px; line-height: 1.5; }
     nav a { margin-right: 12px; }
@@ -11,7 +12,17 @@
     .ok { color: #1b5e20; }
     label { display: block; margin-top: 12px; }
     input { padding: 4px; }
+    .messages { display: flex; flex-direction: column; gap: 8px; margin: 16px 0; }
+    .msg { padding: 8px 12px; border-radius: 12px; max-width: 85%; white-space: pre-line; }
+    .msg.assistant { background: #f1f3f4; align-self: flex-start; }
+    .msg.user { background: #d7ecff; align-self: flex-end; }
+    .card { border: 1px solid #ccc; border-radius: 12px; padding: 12px; margin: 12px 0; }
+    .card th { text-align: left; padding-right: 16px; font-weight: normal; color: #555; }
+    form[action="/chat"] { display: flex; gap: 8px; }
+    form[action="/chat"] input { flex: 1; min-width: 0; }
+    .htmx-indicator { display: none; } .htmx-request .htmx-indicator { display: inline; }
   </style>
+  <script src="/static/htmx.min.js"></script>
 </head>
 <body>
   <nav><strong>biohucker</strong> · <a href="/">Чек-ин</a><a href="/checkin/form">Форма</a></nav>

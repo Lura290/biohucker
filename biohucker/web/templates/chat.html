@@ -1,0 +1,6 @@
+{% extends "base.html" %}
+{% block title %}Чек-ин · biohucker{% endblock %}
+{% block content %}
+<h1>Чек-ин за {{ session.day.isoformat() }}</h1>
+{% include "_chat.html" %}
+{% endblock %}

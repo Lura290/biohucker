@@ -47,6 +47,7 @@ class CheckinSession:
     saved: bool = False
     already_saved: bool = False
     finish_requested: bool = False
+    degraded: bool = False
 
 
 @dataclass(frozen=True)
@@ -85,6 +86,7 @@ class CheckinAgent:
             stop_on={PROPOSE},
         )
         session.messages = result.messages
+        session.degraded = result.degraded
         missing = session.draft.missing_fields()
 
         if result.degraded:
