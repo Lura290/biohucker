@@ -154,3 +154,9 @@ def test_unavailable_error_carries_provider_reason() -> None:
 
     with pytest.raises(LLMUnavailable, match="rate-limited upstream"):
         make_model(handler).complete([], [])
+
+
+def test_timeout_is_configurable() -> None:
+    model = OpenRouterModel(api_key="sk-test", model="m", timeout=90)
+
+    assert model._client.timeout == 90

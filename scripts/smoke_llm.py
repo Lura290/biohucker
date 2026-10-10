@@ -6,6 +6,7 @@
 
 import json
 import sys
+import time
 
 from pydantic import BaseModel, Field, ValidationError
 
@@ -27,6 +28,9 @@ TOOL = Tool(
     args_model=SmokeCheckin,
     handler=lambda args: {"missing": []},
 )
+# Дольше, чем в приложении (20 с): отличаем «медленно отвечает» от «не отвечает совсем».
+SMOKE_TIMEOUT_SECONDS = 90
+
 SYSTEM = "Ты помощник дневника. Извлеки данные из ответа пользователя и вызови propose_checkin."
 USER = "Лёг в 23:40, встал в 7:10, энергия 6, прошёл 8500 шагов."
 
@@ -34,13 +38,16 @@ USER = "Лёг в 23:40, встал в 7:10, энергия 6, прошёл 8500
 def main() -> int:
     settings = load_settings()
     print(f"Модель: {settings.openrouter_model}")
-    model = OpenRouterModel(settings.openrouter_api_key, settings.openrouter_model)
+    model = OpenRouterModel(
+        settings.openrouter_api_key, settings.openrouter_model, timeout=SMOKE_TIMEOUT_SECONDS
+    )
     messages = [{"role": "system", "content": SYSTEM}, {"role": "user", "content": USER}]
 
+    started = time.monotonic()
     try:
         response = model.complete(messages, [TOOL.schema()])
     except LLMUnavailable as error:
-        print(f"❌ Модель недоступна: {error}")
+        print(f"❌ Модель недоступна через {time.monotonic() - started:.0f} с: {error}")
         if "429" in str(error):
             print("   Лимит запросов. Подожди пару минут или попробуй другую бесплатную модель:")
             print("   OPENROUTER_MODEL=<id модели> uv run python scripts/smoke_llm.py")
@@ -52,6 +59,11 @@ def main() -> int:
         print("   → tool use не работает; в T6 используем JSON-в-тексте.")
         return 1
 
+    elapsed = time.monotonic() - started
+    print(
+        f"Ответ за {elapsed:.1f} с"
+        + (" — медленнее лимита приложения (20 с)" if elapsed > 20 else "")
+    )
     call = response.tool_calls[0]
     print(f"Вызван инструмент: {call.name}")
     print(f"Аргументы: {call.arguments}")

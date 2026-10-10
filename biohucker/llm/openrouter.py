@@ -23,6 +23,7 @@ class OpenRouterModel:
         model: str,
         http_client: httpx.Client | None = None,
         sleep: Callable[[float], None] = time.sleep,
+        timeout: float = TIMEOUT_SECONDS,
     ) -> None:
         self._model = model
         self._sleep = sleep
@@ -30,7 +31,7 @@ class OpenRouterModel:
             openai.OpenAI(
                 api_key=api_key,
                 base_url=BASE_URL,
-                timeout=TIMEOUT_SECONDS,
+                timeout=timeout,
                 max_retries=0,
                 http_client=http_client,
             )
